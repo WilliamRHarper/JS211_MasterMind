@@ -11,40 +11,105 @@ let board = [];
 let solution = '';
 let letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
-const printBoard = () =>  {
+
+function printBoard() {
   for (let i = 0; i < board.length; i++) {
     console.log(board[i]);
   }
 }
 
-const generateSolution = () =>  {
-  for (let i = 0; i < 4; i++) {
-    const randomIndex = getRandomInt(0, letters.length);
-    solution += letters[randomIndex];
+// function generateSolution() {
+//   for (let i = 0; i < 4; i++) {
+//     const randomIndex = getRandomInt(0, letters.length);
+//     solution += letters[randomIndex];
+//   }
+// }
+
+// function getRandomInt(min, max) {
+//   return Math.floor(Math.random() * (max - min)) + min;
+// }
+
+const addHint = (guess) => {
+  let hint = generateHint(guess);
+  board.push(hint);
+}
+
+// const mastermind = (guess) => {
+//   if (guess === solution){
+//     return 'You guessed it!';
+//   }
+//   else if (guess.length === 4 && guess !== solution){
+//     generateHint(guess);
+//     addHint(guess);
+//   }
+
+//   // else if (guess === solution){
+//   //   return 'You guessed it!';
+//   // else {
+//   //   addHint(guess);
+//   // }
+// }
+
+//Generate Hint
+const generateHint = (guess) => {
+  //Initialize Variables
+  let solutionArray = solution.split('');
+  let guessArray = guess.split('');
+  let correctLetterLocations = 0;
+  let correctLetter = 0;
+
+  //Determine location accuracy
+  for(let i = 0; i < 4; i++)
+  {
+    if(solutionArray[i] === guessArray[i])
+    {
+      correctLetterLocations++;
+      solutionArray[i] = null;
+    }
   }
-}
 
-const getRandomInt = (min, max) => {
-  return Math.floor(Math.random() * (max - min)) + min;
-}
+  //Determine letter accuracy
+  for(let i = 0; i < 4; i++)
+  {
+    let targetIndex = solutionArray.indexOf(guessArray[i]);
+    if(targetIndex > -1)
+    {
+      correctLetter++;
+      solutionArray[targetIndex] = null;
+    }
+  }
 
-const generateHint = () =>  {
-  // your code here
-}
+  //Return results
+  return correctLetter + '-' + correctLetterLocations;
+  }
 
-const mastermind = (guess) => {
-  solution = 'abcd'; // Comment this out to generate a random solution
-  // your code here
-}
+  const mastermind = (guess) => {
+    if (guess === solution){
+      console.log('You guessed it!');
+      return 'You guessed it!';
+    }
+    else if (guess.length === 4 && guess !== solution){
+      generateHint(guess);
+      addHint(guess);
+    }
+  
+    // else if (guess === solution){
+    //   return 'You guessed it!';
+    // else {
+    //   addHint(guess);
+    // }
+  }
+//Test
 
-
-const getPrompt = () =>  {
+function getPrompt() {
   rl.question('guess: ', (guess) => {
     mastermind(guess);
     printBoard();
     getPrompt();
   });
 }
+
+
 
 // Tests
 
